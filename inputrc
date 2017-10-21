@@ -1,0 +1,37 @@
+$include /etc/inputrc
+
+# Allow command line to wrap
+set horizontal-scroll-mode Off
+
+"\e[1~": beginning-of-line
+"\e[4~": end-of-line
+"\e[5~": beginning-of-history
+"\e[6~": end-of-history
+"\e[3~": delete-char
+"\e[2~": quoted-insert
+"\e[5C": forward-word
+"\e[5D": backward-word
+"\e\e[C": forward-word
+"\e\e[D": backward-word
+
+# arrows search bash history
+"\e[A":history-search-backward
+"\e[B":history-search-forward
+
+# Use Alt/Meta + Delete to delete the preceding word
+"\e[3;3~": kill-word
+"\C-w": unix-word-rubout
+"\e\C-w": kill-word
+
+# set show-all-if-ambiguous on # don't require double-tab
+set completion-query-items 150
+set completion-ignore-case on
+set bell-style none
+set prefer-visible-bell
+# set bell-style visible
+set expand-tilde on
+
+# set convert-meta off # convert alt-whatever characters to commands
+set input-meta on
+set output-meta on
+set visible-stats on

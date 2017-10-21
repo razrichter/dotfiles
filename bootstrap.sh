@@ -32,6 +32,8 @@ cshrc
 cshrc.d
 logout
 logout.d
+inputrc
+hushlogin
 _COMMAND_LIST
 )
 

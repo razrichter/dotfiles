@@ -1,0 +1,108 @@
+# -*- mode: sh; -*-
+# vim: set filetype=sh :
+# Path tools
+
+abspath() {
+    # abspath $path [$root]-- prints absolute path
+    # if $root is passed, $path is assumed to be relative to $root
+    local ABSFILE="${1}"
+    local ROOT=${2:-$PWD}
+    [ -z "$ABSFILE" ] && return 1
+    ABSFILE=${ABSFILE%/}  # remove final /, if there
+    {
+    if [ -z "$ABSFILE" ]; then
+        echo "/"
+        return 0
+    elif [ "$ABSFILE" = "." ]; then
+        echo "$ROOT"
+    elif [ "${ABSFILE#/}" = "${ABSFILE}" ]; then
+        echo "${ROOT}/${ABSFILE}"
+    else
+        echo "${ABSFILE}"
+    fi
+    } | sed '
+    s~^\./~~
+    :a
+    s;/\./;/;g
+    s;//;/;g
+    s;/[^/][^/]*/\.\./;/;g
+    ta
+    s~/[^/][^/]*/\.\.$~/~
+    '
+}
+
+relpath() {
+    # relpath $target $source -- prints relative path to $target from $source (or $PWD)
+    # NB: always assumes that $source is a directory
+    target=$(abspath "${1}")
+    source=$(abspath "${2:-$PWD}")
+    source="${source%/}/"
+    [ -z "$target" ] && return 1
+
+    common=$source
+    result=''
+    while [ "${target#$common}" = "$target" ]; do
+        # no match, so check one dir up from $source
+        common=$(dirname "$common")
+        result=..${result:+/$result}
+    done
+    if [ "$common" = "/" ]; then
+        result="$result/"
+    fi
+    forward="${target#$common}"
+    if [ -n "$result" ] && [ -n "$forward" ]; then
+        result="$result$forward"
+    elif [ -n "$forward" ]; then
+        result=${forward%/}
+    fi
+    echo "$result"
+}
+
+realpath() {
+    # realpath $path -- prints the link-resolved path
+    path=$(abspath "${1:-$PWD}")
+    while [ -L "$path" ]; do
+        path=$(abspath "$(readlink "$path")" "$(dirname "$path")")
+    done
+    if [ -d "$path" ]; then
+        realpath=$(cd "$path" && /bin/pwd -P)
+    else
+        realdir="$(cd "$(dirname "$path")" && /bin/pwd -P)"
+        realpath="$realdir/$(basename "$path")"
+    fi
+    echo "$realpath"
+}
+
+samepath() {
+    # samepath $patha $pathb -- returns true iff $patha and $pathb are the same entity on the filesystem (i.e. links or symbolic paths)
+    patha_inode=$(stat -f '%i' "$(realpath "$1")" 2>/dev/null)
+    pathb_inode=$(stat -f '%i' "$(realpath "$2")" 2>/dev/null)
+    [ "$patha_inode" = "$pathb_inode" ]
+}
+
+parentpaths() {
+    # parentpaths [-P] [-L] <path> -- returns parent dirs
+    #  -P uses realpath
+    #  -L uses linked path if <path> is a symbolic link (a opposed to realpath, which resolves all links)
+    while getopts "PL" opt; do
+        case $opt in
+            P) local use_realpath=1 ;;
+            L) local use_readlink=1 ;;
+        esac
+    done
+    shift $((OPTIND-1))
+
+    local path
+    path=$(abspath "${1:-$PWD}")
+    [ -n "${use_readlink:-}" -a -L "${path}" ] && path=$(readlink "$path")
+    [ -n "${use_realpath:-}" ] && path=$(realpath "$path")
+    [ ! -d "${path}" ] && path=$(dirname "$path")
+    while [ -n "${path:-}" ]; do
+        echo "$path"
+        path=$(dirname "$path")
+        path=${path%/}
+    done
+    echo '/'
+}
+
+export -f abspath relpath realpath parentpaths

@@ -1,0 +1,2 @@
+alias realias='$EDITOR ${LOGIN_ROOT:-$HOME}/.bashrc.d/99_misc && ./${LOGIN_ROOT:-$HOME}/.bashrc.d/99_misc'
+## *Add new functions/aliases/etc below*

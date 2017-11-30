@@ -34,6 +34,7 @@ logout
 logout.d
 inputrc
 hushlogin
+dircolors
 _COMMAND_LIST
 )
 

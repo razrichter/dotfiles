@@ -1,0 +1,17 @@
+# -*- mode: sh; -*-
+# vim: set filetype=sh :
+# Setup for /bin/ls and /bin/grep to support color, the alias is in /etc/bashrc.
+if ls --color / 2>/dev/null; then  # GNU ls
+    if [ -f "/etc/dircolors" ] ; then
+        eval $(dircolors -b /etc/dircolors)
+
+        if [ -f "$HOME/.dircolors" ] ; then
+            eval $(dircolors -b $HOME/.dircolors)
+        fi
+    fi
+    export LS_OPTIONS=${LS_OPTIONS:+"$LS_OPTIONS "}--color=tty
+    alias grep='\grep --color=auto'
+else  # BSD? ls
+    export LSCOLORS='DxGxFxdxCxDxDxhbadExEx'
+    export CLICOLOR=1
+fi

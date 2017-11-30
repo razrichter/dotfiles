@@ -1,0 +1,7 @@
+# -*- mode: sh; -*-
+# vim: set filetype=sh :
+
+# sets general variables if they don't get set elsewhere
+: ${USER:=$(whoami)}
+: ${HOST:=$(hostname -f)}
+: ${HOME:=$(finger $USER | awk '/^Directory/ {print $2 }')}

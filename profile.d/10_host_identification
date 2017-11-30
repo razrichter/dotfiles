@@ -1,0 +1,42 @@
+# -*- mode: sh; -*-
+# vim: set filetype=sh :
+
+# Environment variables describing the host OS
+
+if [ -z "$DISTRO" ]; then
+
+    # host type is easy:
+    OS=$(uname -s)
+    RELEASE=$(uname -r)
+    HOST=${HOST:-$(hostname -f)}
+    case "$OS" in
+        Linux)
+            DISTRO=$(lsb_release -si)
+            VERSION=$(lsb_release -sr)
+            CODENAME=$(lsb_release -sc)
+        ;;
+        Darwin)
+            DISTRO=$(sw_vers -productName | sed -e 's/ //g') # because it comes back as 'Mac OS X'
+            VERSION=$(sw_vers -productVersion)
+            case $VERSION in
+                '10.13.'*) CODENAME='HighSierra' ;;
+                '10.12.'*) CODENAME='Sierra' ;;
+                '10.11.'*) CODENAME='ElCapitan' ;;
+                '10.10.'*) CODENAME='Yosemite' ;;
+                '10.9.'*) CODENAME='Mavericks' ;;
+                '10.8.'*) CODENAME='MountainLion' ;;
+                '10.7.'*) CODENAME='Lion' ;;
+                '10.6.'*) CODENAME='SnowLeopard' ;;
+                '10.5.'*) CODENAME='Leopard' ;;
+                '10.4.'*) CODENAME='Tiger' ;;
+                '10.3.'*) CODENAME='Panther' ;;
+                '10.2.'*) CODENAME='Jaguar' ;;
+                '10.1.'*) CODENAME='Puma' ;;
+                '10.0.'*) CODENAME='Cheetah' ;;
+                *) CODENAME='' ;;
+            esac
+        ;;
+    esac
+
+    export OS RELEASE HOST DISTRO VERSION CODENAME
+fi

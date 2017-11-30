@@ -1,0 +1,160 @@
+# -*- mode: sh; -*-
+# vim: set filetype=sh :
+
+# Functions to help us manage paths.  Second argument is the name of the
+# path variable to be modified (default: PATH)
+
+## copied/adapted from http://www.linuxfromscratch.org/blfs/view/6.3/postlfs/profile.html#etc-profile-profile
+
+# pathremove: remove from path
+# Usage: pathremove <directory> [<PATH variable>]
+pathremove () {
+    local IFS=':'
+    local NEWPATH=''
+    local DIR
+    local PATHVARIABLE=${2:-PATH}
+    eval "local PATHVALUE=\"\${$PATHVARIABLE}\""
+    for DIR in ${PATHVALUE} ; do
+        local no_add=''
+        local TO_REMOVE
+        for TO_REMOVE in $1; do
+            if [ "$DIR" != "$TO_REMOVE" ] ; then
+                no_add=1
+            fi
+        done
+        if [ -z "$no_add" ]; then
+            NEWPATH=${NEWPATH:+$NEWPATH:}$DIR
+        fi
+    done
+    # shellcheck disable=SC1066
+    export $PATHVARIABLE="$NEWPATH"
+}
+
+# pathprepend: add to start of path
+# Usage: pathprepend <directory> [<PATH variable>]
+pathprepend () {
+    local PATHVARIABLE=${2:-PATH}
+    pathremove "$1" "$PATHVARIABLE"
+    eval "local PATHVALUE=\${$PATHVARIABLE:-}"
+    # shellcheck disable=SC1066
+    export $PATHVARIABLE="$1${PATHVALUE:+:${PATHVALUE}}"
+}
+
+# pathappend: add to end of path
+# Usage: pathappend <directory> [<PATH variable>]
+pathappend () {
+    local PATHVARIABLE=${2:-PATH}
+    pathremove "$1" "$PATHVARIABLE"
+    eval "local PATHVALUE=\"\${$PATHVARIABLE:-}\""
+    # shellcheck disable=SC1066
+    export $PATHVARIABLE="${PATHVALUE:+${PATHVALUE}:}$1"
+}
+
+# pathunique: remove duplicates from path
+# Usage: pathunique [PATHVARIABLE]
+pathunique () {
+    local PATHVARIABLE=${1:-PATH}
+    eval "local PATHVALUE=\${$PATHVARIABLE:-}"
+    # shellcheck disable=SC1066
+    $PATHVARIABLE=$(echo "$PATHVALUE"  | perl -lF: -aE 'push @new, grep {!$seen{$_}++} @F; END { say join(":",@new);}')
+    # shellcheck disable=2163
+    export "$PATHVARIABLE"
+}
+
+# pathdump: show path, one per line
+# Usage: pathdump [<PATH name>]
+pathdump () {
+    local PATHVARIABLE=${1:-PATH}
+    if env | grep -q "^$PATHVARIABLE=" ; then
+        eval "local PATHVALUE=\${$PATHVARIABLE}"
+    else
+        local PATHVALUE=$PATHVARIABLE
+    fi
+    echo "$PATHVALUE" | awk -v RS=: '{sub( /\n$/ ,""); print}'
+}
+
+# pathgrep: show paths that match/don't match a regex
+# Usage: pathgrep [-v] <regex> [<PATH name>]
+pathgrep() {
+    invert=''
+    if [ "${1:-0}" = '-v' ]; then
+        invert='-v'
+        shift
+    fi
+    local PATHVARIABLE=${2:-PATH}
+    local str=$1
+    pathdump "$PATHVARIABLE" | grep ${invert} "$str"
+}
+
+# add_local_prefix: add all directories under $1 to appropriate environment vars
+# Usage: add_local_prefix <root_path>
+add_local_prefix () {
+    action=${2:-prepend}
+    if [ -n "$1" ]; then
+        prefix=${1%/}
+        if [ -d "$prefix/sbin" ]; then
+            "path$action" "$prefix/sbin" PATH
+        fi
+        if [ -d "$prefix/bin" ]; then
+            "path$action" "$prefix/bin" PATH
+        fi
+        if [ -d "$prefix/lib" ]; then
+            "path$action" "$prefix/lib" LD_LIBRARY_PATH
+            "path$action" "$prefix/lib" LIBRARY_PATH
+            # "path$action" "$prefix/lib" DYLD_LIBRARY_PATH
+        fi
+        if [ -d "$prefix/lib64" ]; then
+            "path$action" "$prefix/lib64" LD_LIBRARY_PATH
+            "path$action" "$prefix/lib64" LIBRARY_PATH
+            # "path$action" "$prefix/lib64" DYLD_LIBRARY_PATH
+        fi
+        if [ -d "$prefix/include" ]; then
+            "path$action" "$prefix/include" INCLUDE_PATH
+            "path$action" "$prefix/include" CPATH
+        fi
+        if [ -d "$prefix/man" ]; then
+            "path$action" "$prefix/man" MANPATH
+        fi
+        if [ -d "$prefix/share/man" ]; then
+            "path$action" "$prefix/share/man" MANPATH
+        fi
+        if [ -d "$prefix/info" ]; then
+            "path$action" "$prefix/info" INFOPATH
+        fi
+        if [ -d "$prefix/share/info" ]; then
+            "path$action" "$prefix/share/info" INFOPATH
+        fi
+        if [ -d "$prefix/lib/pkgconfig" ]; then
+            "path$action" "$prefix/lib/pkgconfig" PKG_CONFIG_PATH
+        fi
+        if [ -d "$prefix/share/pkgconfig" ]; then
+            "path$action" "$prefix/share/pkgconfig" PKG_CONFIG_PATH
+        fi
+    fi
+}
+
+# remove_local_prefix: remove directories under a root from all environment paths
+# Usage: remove_local_prefix <root_path>
+remove_local_prefix() {
+    if [ -n "$1" ]; then
+        prefix=${1%/}
+        pathremove "$prefix/sbin" PATH
+        pathremove "$prefix/bin" PATH
+        pathremove "$prefix/lib" LD_LIBRARY_PATH
+        # pathremove "$prefix/lib" DYLD_LIBRARY_PATH
+        pathremove "$prefix/lib" LIBRARY_PATH
+        pathremove "$prefix/lib64" LD_LIBRARY_PATH
+        pathremove "$prefix/lib64" DYLD_LIBRARY_PATH
+        pathremove "$prefix/lib64" LIBRARY_PATH
+        pathremove "$prefix/include" INCLUDE_PATH
+        pathremove "$prefix/include" CPATH
+        pathremove "$prefix/man" MANPATH
+        pathremove "$prefix/share/man" MANPATH
+        pathremove "$prefix/info" INFOPATH
+        pathremove "$prefix/share/info" INFOPATH
+        pathremove "$prefix/lib/pkgconfig" PKG_CONFIG_PATH
+        pathremove "$prefix/share/pkgconfig" PKG_CONFIG_PATH
+    fi
+}
+
+export -f pathremove pathprepend pathappend pathunique pathdump pathgrep add_local_prefix remove_local_prefix

@@ -1,0 +1,7 @@
+# -*- mode: sh; -*-
+# vim: set filetype=sh :
+
+# general options
+umask 002  # set default openpermission mask (other -write)
+# ulimit -s unlimited >& /dev/null   # unlimited stack
+ulimit -Sc 0 >/dev/null 2>/dev/null  # core dumps to 0

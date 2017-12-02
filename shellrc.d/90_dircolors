@@ -1,7 +1,7 @@
 # -*- mode: sh; -*-
 # vim: set filetype=sh :
 # Setup for /bin/ls and /bin/grep to support color, the alias is in /etc/bashrc.
-if ls --color / 2>/dev/null; then  # GNU ls
+if ls --color / >/dev/null 2>&1; then  # GNU ls
     if [ -f "/etc/dircolors" ] ; then
         eval $(dircolors -b /etc/dircolors)
 

@@ -11,7 +11,7 @@ if [ -t 0 ]; then  # only run if interactive shell
         for p in "${_root}"/.shellrc.d/*; do
             f=$(basename "$p")
             if [ -f "$p" -a "$f" = "${f#_}" ]; then   # ignore files that start with _
-                [ "${DEBUG:-}" -ge 2 ] && echo "$p"
+                [ "${DEBUG:-0}" -ge 2 ] && echo "$p"
                 . "$p"
             fi
         done

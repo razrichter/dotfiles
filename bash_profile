@@ -14,7 +14,7 @@ if [ -z "${__DOT_BASH_PROFILE:-}" -o -n "${RELOAD_DOT:-}" ]; then  # run only on
     for p in "${_root}"/.bash_profile.d/*; do
         f=$(basename "$p")
         if [ -f "$p" -a "$f" = "${f#_}" ]; then   # ignore files that start with _
-            [ "${DEBUG:-}" -ge 2 ] && echo "$p"
+            [ "${DEBUG:-0}" -ge 2 ] && echo "$p"
             . "$p"
         fi
     done

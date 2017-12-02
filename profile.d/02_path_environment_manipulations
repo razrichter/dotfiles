@@ -18,7 +18,7 @@ pathremove () {
         local no_add=''
         local TO_REMOVE
         for TO_REMOVE in $1; do
-            if [ "$DIR" != "$TO_REMOVE" ] ; then
+            if [ "$DIR" = "$TO_REMOVE" ] ; then
                 no_add=1
             fi
         done

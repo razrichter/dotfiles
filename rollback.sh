@@ -9,11 +9,9 @@ bindir=$(cd "$(dirname "$0")" && pwd)
 
 usage () {
     cat <<_USAGE
-$(basename "$0") [-n] [<dir>]
-Links and hides the dotfiles into the
-given directory, or \$HOME, if not otherwise specified.
-Options:
-    -n : dry-run (only show files that would be changed)
+$(basename "$0") <datestamp> [<root_dir>]
+removes the links created by bootstrap in <root_dir>, and restores the files
+with the suffix <datestamp>.orig
 _USAGE
 }
 
@@ -43,33 +41,33 @@ _COMMAND_LIST
 
 main() {
     # option parsing
-    local dryrun=
-    while getopts "hn" opt; do
+    while getopts "h" opt; do
         case $opt in
             h)
                 usage >&2
                 exit 0
             ;;
-            n) dryrun=1;
         esac
     done
     shift $((OPTIND-1))
 
-    root=${1-"$HOME"}
+    datestamp=${1}
+    root=${2:-"$PWD"}
     [ ! -d "$root" ] && mkdir -p "$root"
-    timestamp=$(date -u +'%Y-%m-%dT%H-%m-%SZ')
     for f in $commands; do
-        p=$(abspath "$bindir/$f")
-        t="$root/.$f"
-        if [ -e "$p" ]; then
-            if [ "1" = "${dryrun:-}" ]; then
-                [ -e "$t" ] && echo "$t"
-            else
-                if [ -e "$t" ]; then  #  move existing files out of the way
-                    mv "$t" "$t.$timestamp.orig"
+        source="$bindir/$f"
+        target="${root}/.${f}"
+        backup="${root}/.${f}.${datestamp}.orig"
+        if [ -e "$target" ]; then
+            if samepath "$source" "$target" ; then
+                rm "$target"
+                if [ -e "$backup" ]; then
+                    mv "$backup" "$target"
                 fi
-                ln -s "$p" "$t"
+            else
+                echo "$target is not a link to repo. Leaving..." >&2
             fi
+
         else
             echo "Couldn't find $f" >&2
         fi
@@ -102,6 +100,27 @@ abspath() {
     ta
     s~/[^/][^/]*/\.\.$~/~
     '
+}
+realpath() {
+    # realpath $path -- prints the link-resolved path
+    path=$(abspath "${1:-$PWD}")
+    while [ -L "$path" ]; do
+        path=$(abspath "$(readlink "$path")" "$(dirname "$path")")
+    done
+    if [ -d "$path" ]; then
+        realpath=$(cd "$path" && /bin/pwd -P)
+    else
+        realdir="$(cd "$(dirname "$path")" && /bin/pwd -P)"
+        realpath="$realdir/$(basename "$path")"
+    fi
+    echo "$realpath"
+}
+
+samepath() {
+    # samepath $patha $pathb -- returns true iff $patha and $pathb are the same entity on the filesystem (i.e. links or symbolic paths)
+    patha_inode=$(stat -f '%i' "$(realpath "$1")" 2>/dev/null)
+    pathb_inode=$(stat -f '%i' "$(realpath "$2")" 2>/dev/null)
+    [ "$patha_inode" = "$pathb_inode" ]
 }
 
 main "$@"

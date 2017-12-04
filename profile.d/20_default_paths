@@ -1,0 +1,16 @@
+# -*- mode: sh; -*-
+# vim: set filetype=sh :
+
+## Set up general paths, before other modifications
+# this will not clear out any paths not listed,
+# but will push them to lowest priority
+# remember that the order added is lowest to highest priority
+while read d; do
+    [ -d "$d" ] && add_local_prefix "$d"
+done <<_SEARCH_PATHS
+/
+/usr
+/usr/local
+/opt/local
+$HOME
+_SEARCH_PATHS

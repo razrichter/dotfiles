@@ -1,4 +1,4 @@
-_term_CSI=`printf '\033['
+_term_CSI=$(printf '\033[')
 
 # Tmux/screen swallow unknown escape codes; workaround
 case $TERM in

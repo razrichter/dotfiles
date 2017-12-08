@@ -88,3 +88,30 @@ you only want to run at an interactive terminal, wrap them in
     ...
     endif
 
+Ordering Files for Priority
+===========================
+
+Because files will be loaded in ascii-betical order, higher numbered
+(or un-numbered) files in a directory will be loaded after lower
+numbered files, and therefore *override* any values set there.
+This means that items should be loaded from general to specific or
+low to high priority, and that functions used by later stages must be
+lower numbered. \[N.B. ascii-betical ordering means that 222 will
+load after 22, not after 99.\]
+
+For sanity's sake, I'm numbering ranges as follows
+
+* 00-19
+    basic functions/variables used in later stages
+
+* 20-49
+    general settings and sane defaults
+
+* 50-89
+    site-specific settings
+
+* 90-99
+    high priority overrides
+
+* aa-zz
+    personal settings

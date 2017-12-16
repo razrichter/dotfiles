@@ -8,8 +8,10 @@ TLDR;
 
 * because GUI terminal windows on mac are login shells, but on linux are
   non-login shells, it's important to source \*rc files from \*profile files.
-  The other way round isn't important, because there's a parent process in
-  linux that *is* a login shell.
+
+* there's a lot of weirdness with regard to interactions of ssh options and
+  whether or not there's a command in the ssh, so it's also important to
+  make sure that \*profile files get sourced from \*rc files
 
 * Extended posix shells' (bash and zsh) \*profile files should source a
   .profile file that contains common settings, and should otherwise
@@ -200,3 +202,22 @@ Testing for various shell types
     - ``if($?prompt) then``
 
         - csh and tcsh
+
+
+SSH weirdness
+=============
+
+* If you simply run ``ssh <hostname>``, it will start a new interactive login shell.
+
+* However, if you run ``ssh <hostname> <command>``, it will neither be interactive or
+  a login shell, so only \*rc scripts will run (except, of course, .shellrc, since
+  that's not actually a thing).
+
+* You can make it an interactive shell with ``ssh -t <hostname> <command>``. However,
+  it's still not a login shell, so the \*profile scripts won't run.
+
+* Note that, if you are running a command, no login scripts will be loaded.
+  To get around that, you can run the command prefixed with ``$SHELL -li -c '<command>'``.
+  However, do note that, any rc files will run *first*, before the login shell
+  is started.
+

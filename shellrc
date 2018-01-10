@@ -4,18 +4,15 @@
 if [ -t 0 ]; then  # only run if interactive shell
 
     _root=${LOGIN_ROOT:-$HOME}
-    if [ -z "${__DOT_SHELLRC:-}" -o -n "${RELOAD_DOT:-}" ]; then  # run only once
-        [ -n "${DEBUG:=}" ] && echo .shellrc
+    [ "${DEBUG:=0}" -ge 1 ] && echo .shellrc
 
-        ## Import all shellrc subs
-        for p in "${_root}"/.shellrc.d/*; do
-            f=$(basename "$p")
-            if [ -f "$p" -a "$f" = "${f#_}" ]; then   # ignore files that start with _
-                [ "${DEBUG:-0}" -ge 2 ] && echo "$p"
-                . "$p"
-            fi
-        done
+    ## Import all shellrc subs
+    for p in "${_root}"/.shellrc.d/*; do
+        f=$(basename "$p")
+        if [ -f "$p" -a "$f" = "${f#_}" ]; then   # ignore files that start with _
+            [ "${DEBUG:-0}" -ge 2 ] && echo "$p"
+            . "$p"
+        fi
+    done
 
-        export __DOT_SHELLRC=1
-    fi
 fi

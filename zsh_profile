@@ -1,26 +1,26 @@
 # -*- mode: zsh; -*-
 # vim: set filetype=zsh :
 
+in_xprofile=1
+
 _root=${LOGIN_ROOT:-$HOME}
-if [ -e "$_root/DEBUG" ]; then  # create a file named DEBUG to verbose
+if [ -z "${DEBUG:-}" -a -e "$_root/DEBUG" ]; then  # create a file named DEBUG to verbose
     DEBUG=$(cat "$_root/DEBUG")
     export DEBUG=${DEBUG:-1}
 fi
-if [ -z "${__DOT_ZSH_PROFILE:-}" -o -n "${RELOAD_DOT:-}" ]; then  # run only once
-    [ -n "${DEBUG:=}" ] && echo .zsh_profile
+[ -n "${DEBUG:=}" ] && echo .zsh_profile
 
-    [ -e "$_root/.profile" ] && . "$_root/.profile" # load .profile
+[ -e "$_root/.profile" ] && . "$_root/.profile" # load .profile
 
-    ## Import all zsh_profile subs
-    for p in "${_root}"/.zsh_profile.d/*; do
-        f=$(basename "$p")
-        if [ -f "$p" -a "$f" = "${f#_}" ]; then   # ignore files that start with _
-            [ "${DEBUG:-0}" -ge 2 ] && echo "$p"
-            . "$p"
-        fi
-    done
-    # Run .zshrc if it's an interactive shell
-    [ -t 0 -a -e "$_root/.zshrc" ] && . "$_root/.zshrc"
+## Import all zsh_profile subs
+for p in "${_root}"/.zsh_profile.d/*; do
+    f=$(basename "$p")
+    if [ -f "$p" -a "$f" = "${f#_}" ]; then   # ignore files that start with _
+        [ "${DEBUG:-0}" -ge 2 ] && echo "$p"
+        . "$p"
+    fi
+done
+# Run .zshrc if it's an interactive shell
+[ -z "${in_rc:-} -a -t 0 -a -e "$_root/.zshrc" ] && . "$_root/.zshrc"
 
-    export __DOT_ZSH_PROFILE=1
-fi
+unset in_xprofile

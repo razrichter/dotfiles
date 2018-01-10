@@ -5,3 +5,4 @@
 : ${USER:=$(whoami)}
 : ${HOST:=$(hostname -f)}
 : ${HOME:=$(finger $USER | awk '/^Directory/ {print $2 }')}
+: ${LC_ALL:=en_US.UTF-8}

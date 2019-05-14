@@ -1,0 +1,10 @@
+# -*- mode: sh; -*-
+# vim: set filetype=sh :
+
+alias sshs='/usr/bin/ssh -S none -o TCPKeepAlive=yes -N -v -o ServerAliveInterval=300'
+ssht() {
+    /usr/bin/ssh -o TCPKeepAlive=yes -o ServerAliveInterval=300 -t "$@" 'RELOAD_DOT=1 bash -li -c "if tmux list-sessions >/dev/null 2>/dev/null; then tmux -CC attach; else tmux -CC; fi"'
+}
+alias sshn='/usr/bin/ssh -S none'
+
+alias mosh="mosh --server='. ~/.profile && mosh-server'"

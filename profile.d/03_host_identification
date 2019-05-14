@@ -19,6 +19,7 @@ if [ -z "$DISTRO" ]; then
             DISTRO=$(sw_vers -productName | sed -e 's/ //g') # because it comes back as 'Mac OS X'
             VERSION=$(sw_vers -productVersion)
             case $VERSION in
+                '10.14.'*) CODENAME='Mohave' ;;
                 '10.13.'*) CODENAME='HighSierra' ;;
                 '10.12.'*) CODENAME='Sierra' ;;
                 '10.11.'*) CODENAME='ElCapitan' ;;

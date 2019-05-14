@@ -1,0 +1,106 @@
+# -*- mode: sh; -*-
+# vim: set filetype=sh :
+## iTerm-specific Escapes -- c.f. https://iterm2.com/documentation-escape-codes.html
+
+# -------------------------------------------- cursor/terminal info functions
+cursor_shape() {
+    # Usage: cursor_shape [b|v|u]
+    # b = block cursor
+    # v = vertical line
+    # u = underscore
+    # empty resets to block cursor
+    local shape=0
+    if [ -n "$1" ]; then
+        case $1 in
+            b*) shape=0 ;;  # block
+            v*) shape=1 ;;  # vertical line
+            u*) shape=2 ;;  # underscore
+        esac
+    fi
+    printf "$(_term_OSC)1337;CursorShape=${shape}$(_term_ST)"
+}
+
+cursor_guide() {  # highlights entire line cursor is currently on
+    local val='yes'
+    if [ -n "$1" ]; then
+        case $1 in
+            y*) val='yes' ;;
+            n*) val='no' ;;
+        esac
+    fi
+    printf "$(_term_OSC)1337;HighlightCursorLine=${val}$(_term_ST)"
+}
+
+alias set_mark='printf "$(_term_OSC)1337;SetMark$(_term_ST)"'  # set_mark tells iTerm that this is a spot to remember in scrollback history
+
+tell_dir() {  # add dir to Recent Directories
+    # Usage: tell_dir [/path/to/tell]
+    # default = $PWD
+    local dir=${1:-$PWD}
+    printf "$(_term_OSC)1337;CurrentDir=%s$(_term_ST)" $dir
+}
+
+# --------------------------------------------------------------------------- terminal display modifications
+
+tab_color() {
+    # Usage: tab_color RRR GGG BBB
+    if [ -n "$1" ]; then
+        local red=${1:-0}
+        local green=${2:-0}
+        local blue=${3:-0}
+        printf "$(_term_OSC)6;1;bg;red;brightness;%i$(_term_ST)" $red
+        printf "$(_term_OSC)6;1;bg;green;brightness;%i$(_term_ST)" $green
+        printf "$(_term_OSC)6;1;bg;blue;brightness;%i$(_term_ST)" $blue
+    else
+        printf "$(_term_OSC)6;1;bg;*;default$(_term_ST)"
+    fi
+}
+
+iterm_profile() {
+    local profile=${1:-'Default'}
+    printf "$(_term_OSC)1337;SetProfile=%s$(_term_ST)" $profile
+}
+
+# -------------------------------------------------------------------------- notifications
+
+alias term_to_foreground='printf "$(_term_OSC)1337;StealFocus$(_term_ST)"'  # pushes the iTerm window to the foreground
+
+dock_alert() {
+    local val='yes'
+    if [ -n "$1" ]; then
+        case $1 in
+            y*) val='yes' ;;
+            n*) val='no'  ;;
+        esac
+    fi
+    printf "$(_term_OSC)1337;RequestAttention=%s$(_term_ST)" $val
+}
+
+growl() {  # outputs text as a Growl notification
+    # Usage: growl Text of Notification
+    printf "$(_term_OSC)9;%s$(_term_ST)" "$*"
+}
+popup() {
+    growl "$@"
+}
+
+growlcat() {  # outputs stdin as a Growl notification
+    # Usage: cmd | growlcat
+    local s=$(echo $(sed -e 's/[[:cntrl:]]//g'))    # swallow control chars and \n
+    printf "$(_term_OSC)9;${s}$(_term_ST)"
+}
+
+# ----------------------------------------------------------------------------- misc functions
+
+# copy disabled because it echos the text to the terminal, and requires the preference Prefs>General>Applications in terminal may access clipboard to be set
+# so it's probably easier to just highlight + Cmd-C
+# iterm_pbcopy() {
+#     printf "$(_term_OSC)1337;CopyToClipboard=$(_term_ST)"
+#     cat -
+#     printf "$(_term_OSC)1337;EndCopy$(_term_ST)"
+# }
+# if ! which pbcopy >/dev/null; then  # only do this if we're *not* on a mac
+#     alias pbcopy=iterm_pbcopy
+# fi
+
+alias clear_scrollback='printf "$(_term_OSC)1337;ClearScrollback$(_term_ST)"'  # clears the terminal foreground (like Cmd-K)

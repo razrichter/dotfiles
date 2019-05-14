@@ -11,6 +11,20 @@ This links the dotfiles into your ``$HOME`` directory.
 To install to some other directory (e.g. for testing),
 set ``$LOGIN_ROOT`` to the target directory.
 
+Uninstallation
+==============
+
+    ls -d ~/.bashrc*
+
+Look at the timestamp extension on the backed up file (e.g.
+.bashrc.2018-04-17T04-05-13Z.orig, select the ISO-8601 timestamp), then
+
+    ~/dotfiles/rollback.sh <datestamp> ~/
+
+which will remove the links into the dotfiles directory and replace them with
+the old, backed-up files.
+
+
 What's going on here?
 =====================
 

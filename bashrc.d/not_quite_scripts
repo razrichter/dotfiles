@@ -1,0 +1,51 @@
+# -*- mode: sh; -*-
+# vim: set filetype=sh :
+
+alias p='parallel --colsep="   "'
+alias cr2lf='perl -p -i -e "s/\cM(\cJ)?/\n/g"'
+alias isodate='date '"'"'+%FT%T%z'"'"
+alias ttop='/usr/bin/top -ocpu -R -F -s 2 -n30'
+alias which='type -p'
+alias count_uniq='perl -nE '"'"'chomp; push @t, $_ unless $t{$_}; $t{$_}++; END { print "$t{$_}\t$_\n" foreach @t }'"'"
+alias nohead='sed 1d'
+alias indent="sed -e 's/^/    /'"
+alias dus='du --max-depth 1'
+alias add='perl -ne '"'"'$t += $_ foreach split; END { print "$t\n" }'"'"
+alias awkt="awk -F'\t' -v OFS='\t'"
+alias cl='clear && tmux clear-history 2>/dev/null; printf "\e]50;ClearScrollback\a"'
+ebc() {
+    echo "$@" |bc
+}
+
+alias raxml_newick_to_std='perl -i.orig -pe '"'"'s/:(\d+\.\d+)\[(\d+)\]/$2:$1/g'"'"
+
+
+# making directories
+alias md='mkdir'
+mdcd() {
+    mkdir -p $1 && cd $1
+}
+
+# python-related
+alias pdb='python -m pdb'
+
+# perl-related
+# alias bioperl='perl -MBio::SeqIO -MBio::SearchIO -MBio::AlignIO'
+alias build='./Build'
+alias cpan='perl -MCPAN -Mlocal::lib=$PERL_LOCAL_LIB_ROOT -e shell'
+
+
+serverstat() {
+    server=${1:-localhost}
+    ssh -q "$server" 'echo -n "  users: " && who | cut -f 1 -d " " | sort -u | wc -l;
+        echo -n "  load: " && cat /proc/loadavg ;
+        echo "  screen:" && screen -ls | fgrep ".pts-"
+        echo "  tmux:" && tmux list-sessions 2>/dev/null | sed -e "s/^/    /; s/:.*//"
+    '
+}
+lserverstat() {
+    while read x
+        echo "::$x"
+        serverstat $x
+    done < $HOME/login_servers
+}

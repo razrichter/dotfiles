@@ -1,0 +1,4 @@
+# -*- mode: sh; -*-
+# vim: set filetype=sh :
+
+stty start undef stop undef

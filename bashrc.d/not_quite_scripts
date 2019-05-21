@@ -44,7 +44,7 @@ serverstat() {
     '
 }
 lserverstat() {
-    while read x
+    while read x; do
         echo "::$x"
         serverstat $x
     done < $HOME/login_servers

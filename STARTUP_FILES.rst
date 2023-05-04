@@ -93,7 +93,7 @@ for details of its specification. For learning, I strongly recommend
 Bash
 ----
 
-Bash is the GNU Bourne-Again shell. It's the default shell on most linux and MacOS
+Bash is the GNU Bourne-Again shell. It's the default shell on most linux and older MacOS
 machines. You can see the `official bash documentation <https://www.gnu.org/software/bash/manual/bashref.html>`_
 but the TLDP docs (`Basic <http://www.tldp.org/LDP/Bash-Beginners-Guide/html/index.html>`_
 and `Advanced Scripting <http://www.tldp.org/LDP/Bash-Beginners-Guide/html/index.html>`_)
@@ -118,7 +118,7 @@ are better guides for learning.
 Zsh
 ---
 
-Zsh is a really popular shell for interactive use, and has
+Zsh is the default shell for macOS, a really popular shell for interactive use, and has
 *tons* of fancy configuration available (see `Oh-My-Zsh <https://github.com/robbyrussell/oh-my-zsh>`_
 for a framework for these). You can also read the
 `zsh official documentation <http://zsh.sourceforge.net/>`_.

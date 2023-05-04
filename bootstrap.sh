@@ -42,6 +42,7 @@ gitconfig
 gitignore
 vimrc
 gvimrc
+vim
 _COMMAND_LIST
 )
 

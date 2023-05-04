@@ -1,0 +1,11 @@
+# -*- mode: sh; -*-
+# vim: set filetype=sh :
+
+## Condax
+export CONDAX_PREFIX_PATH="$HOME/pipx/condax"
+export CONDAX_LINK_DESTINATION="$HOME/pipx/bin"
+
+## PipX
+export PIPX_HOME="$HOME/pipx"
+export PIPX_BIN_DIR="$HOME/pipx/bin"
+pathprepend "$PIPX_BIN_DIR"

@@ -16,24 +16,30 @@ if [ -z "$DISTRO" ]; then
             CODENAME=$(lsb_release -sc)
         ;;
         Darwin)
-            DISTRO=$(sw_vers -productName | sed -e 's/ //g') # because it comes back as 'Mac OS X'
+            DISTRO=$(sw_vers -productName | sed -e 's/ //g') # because older versions come back as 'Mac OS X'
+            [ "$DISTRO" = "MacOSX" ] && DISTRO="macOS"  # to regularize for BigSur+
+            [ "$DISTRO" = "MacOS" ] && DISTRO="macOS"   # because it used to be capitalized
             VERSION=$(sw_vers -productVersion)
             case $VERSION in
+                '13.'*)    CODENAME='Ventura' ;;
+                '12.'*)    CODENAME='Monterey' ;;
+                '11.'*)    CODENAME='Big Sur' ;;
+                '10.15.'*) CODENAME='Catalina' ;;
                 '10.14.'*) CODENAME='Mohave' ;;
                 '10.13.'*) CODENAME='HighSierra' ;;
                 '10.12.'*) CODENAME='Sierra' ;;
                 '10.11.'*) CODENAME='ElCapitan' ;;
                 '10.10.'*) CODENAME='Yosemite' ;;
-                '10.9.'*) CODENAME='Mavericks' ;;
-                '10.8.'*) CODENAME='MountainLion' ;;
-                '10.7.'*) CODENAME='Lion' ;;
-                '10.6.'*) CODENAME='SnowLeopard' ;;
-                '10.5.'*) CODENAME='Leopard' ;;
-                '10.4.'*) CODENAME='Tiger' ;;
-                '10.3.'*) CODENAME='Panther' ;;
-                '10.2.'*) CODENAME='Jaguar' ;;
-                '10.1.'*) CODENAME='Puma' ;;
-                '10.0.'*) CODENAME='Cheetah' ;;
+                '10.9.'*)  CODENAME='Mavericks' ;;
+                '10.8.'*)  CODENAME='MountainLion' ;;
+                '10.7.'*)  CODENAME='Lion' ;;
+                '10.6.'*)  CODENAME='SnowLeopard' ;;
+                '10.5.'*)  CODENAME='Leopard' ;;
+                '10.4.'*)  CODENAME='Tiger' ;;
+                '10.3.'*)  CODENAME='Panther' ;;
+                '10.2.'*)  CODENAME='Jaguar' ;;
+                '10.1.'*)  CODENAME='Puma' ;;
+                '10.0.'*)  CODENAME='Cheetah' ;;
                 *) CODENAME='' ;;
             esac
         ;;

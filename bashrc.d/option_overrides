@@ -1,7 +1,7 @@
 # -*- mode: sh; -*-
 # vim: set filetype=sh :
 
-export LESS='--quit-if-one-screen --no-init'
+export LESS='--quit-if-one-screen --raw-control-chars'
 alias ls='\ls $LS_OPTIONS'
 alias wget='\wget -U "Mozilla/5.0 (X11; Linux i586; rv:55ffd.0) Gecko/20100101 Firefox/55.0"'
 alias emacs='\emacs -nw'

@@ -1,0 +1,9 @@
+# -*- mode: sh; -*-
+# vim: set filetype=sh :
+
+if [ "${DISTRO%X}" = "macOS" ]; then
+    export JAVA_HOME=$(/usr/libexec/java_home)
+else
+    export JAVA_HOME=$(java -XshowSettings:properties -version 2>&1 >/dev/null | awk '/java\.home/{print $3}')
+fi
+

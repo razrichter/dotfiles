@@ -9,11 +9,12 @@ if [ -z "${DEBUG:-}" -a -e "$_root/DEBUG" ]; then  # create a file named DEBUG t
     export DEBUG=${DEBUG:-1}
 fi
 [ -n "${DEBUG:=}" ] && echo .zsh_profile
-
+setopt NULL_GLOB   # don't throw an error for no files in directory
 [ -e "$_root/.profile" ] && . "$_root/.profile" # load .profile
+unsetopt NULL_GLOB # reset
 
 ## Import all zsh_profile subs
-for p in "${_root}"/.zsh_profile.d/*; do
+for p in "${_root}"/.zsh_profile.d/*(.N); do
     f=$(basename "$p")
     if [ -f "$p" -a "$f" = "${f#_}" ]; then   # ignore files that start with _
         [ "${DEBUG:-0}" -ge 2 ] && echo "$p"
@@ -21,6 +22,6 @@ for p in "${_root}"/.zsh_profile.d/*; do
     fi
 done
 # Run .zshrc if it's an interactive shell
-[ -z "${in_rc:-} -a -t 0 -a -e "$_root/.zshrc" ] && . "$_root/.zshrc"
+[ -z "${in_rc:-}" -a -t 0 -a -e "$_root/.zshrc" ] && . "$_root/.zshrc"
 
 unset in_xprofile

@@ -105,4 +105,4 @@ parentpaths() {
     echo '/'
 }
 
-export -f abspath relpath realpath parentpaths
+# export -f abspath relpath realpath parentpaths

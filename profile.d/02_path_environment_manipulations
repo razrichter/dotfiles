@@ -157,4 +157,4 @@ remove_local_prefix() {
     fi
 }
 
-export -f pathremove pathprepend pathappend pathunique pathdump pathgrep add_local_prefix remove_local_prefix
+# export -f pathremove pathprepend pathappend pathunique pathdump pathgrep add_local_prefix remove_local_prefix

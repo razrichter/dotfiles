@@ -1,0 +1,10 @@
+# -*- mode: sh; -*-
+# vim: set filetype=sh :
+
+bell() {
+    printf '\a'
+}
+
+mailme() {
+    echo "$*" | mailx -S "$*" "${MAIL_USER:-$USER}"
+}

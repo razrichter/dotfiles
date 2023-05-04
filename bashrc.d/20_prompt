@@ -2,3 +2,4 @@
 # vim: set filetype=sh :
 
 export PS1='[\u@\h:\w]$ '
+# PROMPT_COMMAND='export PS1="${LOCALENV_ROOT:+(LE${LOCALENV_SUBSHELL+$LOCALENV_SUBSHELL}${LOCALENV_ACTIVE+"=$LOCALENV_ACTIVE"})}[\u@\h:\w]\$ "'

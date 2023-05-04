@@ -2,7 +2,7 @@
 # vim: set filetype=sh :
 
 alias p='parallel --colsep="   "'
-alias cr2lf='perl -p -i -e "s/\cM(\cJ)?/\n/g"'
+alias cr2lf='perl -p -i -e '"'"'$BOM="\xEF\xBB\xBF"; s/$BOM//; s/\cM(\cJ)?/\n/g;'"'"
 alias isodate='date '"'"'+%FT%T%z'"'"
 alias ttop='/usr/bin/top -ocpu -R -F -s 2 -n30'
 alias which='type -p'

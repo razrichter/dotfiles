@@ -38,6 +38,10 @@ logout.d
 inputrc
 hushlogin
 dircolors
+gitconfig
+gitignore
+vimrc
+gvimrc
 _COMMAND_LIST
 )
 

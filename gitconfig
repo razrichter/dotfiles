@@ -1,0 +1,48 @@
+[user]
+	name = Alex Richter
+	email = razrichter@gmail.com
+[color]
+	status = auto
+	diff = auto
+	branch = auto
+	interactive = auto
+[alias]
+	st = status -s
+	co = checkout
+	ci = commit
+	staged = diff --cached
+	unstaged = diff
+	both = diff HEAD
+	oneline = log --pretty=oneline
+	amend = commit --amend
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit
+[format]
+	numbered = auto
+[core]
+	legacyheaders = false
+	excludesfile = /Users/rrichter/.gitignore
+    quotepath = false
+[push]
+    default = upstream
+[repack]
+	usedeltabaseoffset = true
+[diff]
+    guitool = sourcetree
+[merge]
+	tool = sourcetree
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+    # trustExitCode = true
+[credential]
+	helper = osxkeychain
+[commit]
+	template = /Users/rrichter/.stCommitMsg
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

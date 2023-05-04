@@ -1,0 +1,55 @@
+# General MacOS files/directories
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+
+# VCS-related files/directories
+CVS
+.svn
+.hg
+.git
+
+# Editor-related directories
+.project
+.vscode
+.pydevproject
+.includepath
+
+# Backup/temporary files
+*~
+.*~
+*.orig
+.*.orig
+\#*#
+*.pyc
+*.pyo
+.*.sw?
+# jupyter checkpoint directories
+.ipynb_checkpoints
+
+# Personal temporary directories
+_internal
+tmp

@@ -1,14 +1,24 @@
-_term_CSI=$(printf '\033[')
+_term_CSI() {
+    printf '\033['
+}
 
 # Tmux/screen swallow unknown escape codes; workaround
 case $TERM in
     screen*)
-        _term_OSC=`printf '\033Ptmux;\033\033]'`
-        _term_ST=`printf '\a\033\\'`
-        ;;
+        _term_OSC() {
+            printf '\033Ptmux;\033\033]'
+        }
+        _term_ST() {
+            printf '\a\033\\'
+        }
+    ;;
     *)
-        _term_OSC=`printf '\033]'`
-        _term_ST=`printf '\a'`
+        _term_OSC() {
+            printf '\033]'
+        }
+        _term_ST() {
+            printf '\a'
+        }
         ;;
 esac
 export _term_CSI _term_OSC _term_ST

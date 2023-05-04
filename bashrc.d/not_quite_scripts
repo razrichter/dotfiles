@@ -1,6 +1,18 @@
 # -*- mode: sh; -*-
 # vim: set filetype=sh :
 
+# command shortcuts
+if [ "$DISTRO" = 'macOS' ]; then
+    alias gvim=mvim
+    alias gview=mview
+    alias vscode='open -a "Visual Studio Code"'
+    alias firefox='open -a "Firefox Nightly"'
+    alias finder='open -a Finder'
+    alias excel='open -a "Microsoft Excel"'
+    alias word='open -a "Microsoft Word"'
+    alias tad='open -a Tad'
+fi
+
 alias p='parallel --colsep="   "'
 alias cr2lf='perl -p -i -e '"'"'$BOM="\xEF\xBB\xBF"; s/$BOM//; s/\cM(\cJ)?/\n/g;'"'"
 alias isodate='date '"'"'+%FT%T%z'"'"
@@ -9,7 +21,11 @@ alias which='type -p'
 alias count_uniq='perl -nE '"'"'chomp; push @t, $_ unless $t{$_}; $t{$_}++; END { print "$t{$_}\t$_\n" foreach @t }'"'"
 alias nohead='sed 1d'
 alias indent="sed -e 's/^/    /'"
-alias dus='du --max-depth 1'
+if [ "$DISTRO" = 'macOS' ]; then
+    alias dus='gdu --max-depth 1'
+else
+    alias dus='du --max-depth 1'
+fi
 alias add='perl -ne '"'"'$t += $_ foreach split; END { print "$t\n" }'"'"
 alias awkt="awk -F'\t' -v OFS='\t'"
 alias cl='clear && tmux clear-history 2>/dev/null; printf "\e]50;ClearScrollback\a"'
